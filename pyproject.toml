@@ -14,10 +14,17 @@ dependencies = [
   "PyYAML>=6.0,<7.0",
   "python-dotenv>=1.0,<2.0",
   "requests>=2.31,<3.0",
+  "fastapi>=0.115,<1.0",
+  "uvicorn[standard]>=0.30,<1.0",
+  "jinja2>=3.1,<4.0",
+  "python-multipart>=0.0.9,<1.0",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0,<9.0"]
+dev = ["pytest>=8.0,<9.0", "httpx2>=2.0,<3.0"]
+
+[project.scripts]
+marketplace-analyzer = "marketplace_analyzer.web.app:run"
 
 [tool.setuptools.packages.find]
 where = ["src"]

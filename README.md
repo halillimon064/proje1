@@ -23,6 +23,16 @@ Copy-Item .env.example .env
 Import an Excel workbook using `python -m marketplace_analyzer.cli import-excel path\to\supplier.xlsx`.
 Run the test suite with `pytest`.
 
+## Local dashboard
+
+Start the dashboard with:
+
+```powershell
+marketplace-analyzer
+```
+
+Then open [http://127.0.0.1:8000](http://127.0.0.1:8000). It provides Excel upload, product search, brand/category filters, and a JSON product endpoint at `/api/products`.
+
 ## Structure
 
 See `src/marketplace_analyzer` for domain models, persistence, importers, and marketplace adapters. Stage 1 and 2 are foundations; matching, scoring, UI and deployment are later stages.

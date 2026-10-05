@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pazaryeri Ürün Fırsat Analiz Sistemi</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='dashboard.css') }}">
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <p class="eyebrow">YEREL ÇALIŞMA ALANI</p>
+        <h1>Ürün Fırsat Analizi</h1>
+        <p class="subtitle">Toptancı listenizi içeri aktarın, ürünleri filtreleyin ve pazaryeri verisi için hazırlayın.</p>
+      </header>
+
+      {% if notice.error %}<div class="notice error">{{ notice.error }}</div>{% endif %}
+      {% if notice.imported is not none %}<div class="notice success">{{ notice.imported }} geçerli satır kaydedildi{% if notice.skipped %}; {{ notice.skipped }} satır hata nedeniyle atlandı{% endif %}.</div>{% endif %}
+
+      <section class="panel import-panel">
+        <div><h2>Excel içe aktar</h2><p>Yapılandırılan sütun başlıklarını içeren bir Excel dosyası yükleyin.</p></div>
+        <form action="/imports/excel" method="post" enctype="multipart/form-data">
+          <input type="file" name="workbook" accept=".xlsx,.xls,.xlsm" required>
+          <button type="submit">Dosyayı içe aktar</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="toolbar"><div><h2>Ürünler</h2><p>{{ total }} ürün kayıtlı</p></div></div>
+        <form class="filters" method="get">
+          <input name="query" value="{{ filters.query }}" placeholder="Ürün adı veya ürün kodu ara">
+          <select name="brand"><option value="">Tüm markalar</option>{% for item in brands %}<option value="{{ item }}" {% if filters.brand == item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select>
+          <select name="category"><option value="">Tüm kategoriler</option>{% for item in categories %}<option value="{{ item }}" {% if filters.category == item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select>
+          <input type="number" name="min_stock" min="0" value="{{ filters.min_stock if filters.min_stock is not none else '' }}" placeholder="En az stok">
+          <button type="submit">Filtrele</button><a href="/">Temizle</a>
+        </form>
+        {% if products %}
+        <div class="table-wrap"><table><thead><tr><th>Kod</th><th>Ürün</th><th>Marka</th><th>Kategori</th><th>Alış fiyatı</th><th>Stok</th></tr></thead><tbody>
+          {% for product in products %}<tr><td>{{ product.supplier_sku }}</td><td>{{ product.name }}</td><td>{{ product.brand or '—' }}</td><td>{{ product.category or '—' }}</td><td>{% if product.purchase_price is not none %}{{ '%.2f'|format(product.purchase_price) }} ₺{% else %}—{% endif %}</td><td>{{ product.stock_quantity if product.stock_quantity is not none else '—' }}</td></tr>{% endfor %}
+        </tbody></table></div>
+        {% else %}<div class="empty"><strong>Henüz ürün yok.</strong><span>Yukarıdan bir toptancı Excel dosyası yükleyin.</span></div>{% endif %}
+      </section>
+      <p class="footnote">Eşleştirme, talep ve marj puanları sonraki geliştirme aşamasında görünecek.</p>
+    </main>
+  </body>
+</html>
