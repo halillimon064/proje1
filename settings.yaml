@@ -1,0 +1,42 @@
+database:
+  url: sqlite:///./marketplace_analyzer.db
+  echo: false
+import:
+  sheet_name: 0
+  column_mapping:
+    supplier_sku: "Ürün Kodu"
+    oem_number: "OEM/Parça No"
+    name: "Ürün Adı"
+    barcode: "Barkod"
+    brand: "Marka"
+    category: "Kategori"
+    purchase_price: "Alış Fiyatı"
+    stock_quantity: "Stok"
+  required_columns: [supplier_sku, name]
+  batch_size: 500
+marketplaces:
+  request_timeout_seconds: 15
+  max_retries: 4
+  backoff_base_seconds: 1.0
+  backoff_max_seconds: 30.0
+  user_agents:
+    - "MarketplaceAnalyzer/0.1 (+configure-contact-email)"
+  adapters:
+    trendyol:
+      enabled: false
+      base_url: ""
+    hepsiburada:
+      enabled: false
+      base_url: ""
+financial:
+  commission_rate: 0.18
+  return_reserve_rate: 0.03
+  shipping_bands:
+    - {max_price: 150, cost: 35}
+    - {max_price: 300, cost: 45}
+    - {max_price: null, cost: 60}
+scoring:
+  weights:
+    margin: 0.45
+    demand: 0.35
+    competition: 0.20
